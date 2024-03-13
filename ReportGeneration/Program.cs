@@ -23,15 +23,15 @@ namespace ReportGeneration
             string wordFilePath = Console.ReadLine();
             Microsoft.Office.Interop.Excel.Application excelApp = new Microsoft.Office.Interop.Excel.Application();
             Workbook workbook = excelApp.Workbooks.Open(excelFilePath);
-            Worksheet employeesSheet = workbook.Sheets["Сотрудники"];
-            Worksheet departmentsSheet = workbook.Sheets["Отделы"];
-            Worksheet tasksSheet = workbook.Sheets["Задачи"];
+            Worksheet employeesSheet = workbook.Sheets["Сотрудники"]; // Получение листа "Сотрудники" из книги Excel
+            Worksheet departmentsSheet = workbook.Sheets["Отделы"]; // Получение листа "Отделы" из книги Excel
+            Worksheet tasksSheet = workbook.Sheets["Задачи"]; // Получение листа "Задачи" из книги Excel
 
-            ReadingData dataProcessor = new ReadingData();
+            ReadingData readingData = new ReadingData();
 
-            List<Employee> employees = dataProcessor.ReadEmployees(employeesSheet);
-            List<Department> departments = dataProcessor.ReadDepartments(departmentsSheet);
-            Dictionary<string, int> taskCountByEmployee = dataProcessor.CalculateTaskCountByEmployee(tasksSheet, employees);
+            List<Employee> employees = readingData.ReadEmployees(employeesSheet);
+            List<Department> departments = readingData.ReadDepartments(departmentsSheet);
+            Dictionary<string, int> taskCountByEmployee = readingData.CalculateTaskCountByEmployee(tasksSheet, employees);
 
             WordDocumentGenerator generator = new WordDocumentGenerator(wordFilePath);
             generator.GenerateReport(departments, employees, taskCountByEmployee);

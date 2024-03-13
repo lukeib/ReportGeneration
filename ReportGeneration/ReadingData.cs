@@ -136,11 +136,11 @@ namespace ReportGeneration
             return 0;
         }
         /// <summary>
-        /// Подсчёт количества задач для каждого сторудника
+        /// Подсчёт количества задач для каждого сотрудника
         /// </summary>
-        /// <param name="tasksSheet">Лист "Задчи"</param>
-        /// <param name="employees">Список сотруников, для которых нужно посчитать кол-во задач</param>
-        /// <returns>Словарь, где ключ - ядентификатор сотрудника, значние - количество задач</returns>
+        /// <param name="tasksSheet">Лист "Задачи"</param>
+        /// <param name="employees">Список сотрудников, для которых нужно посчитать кол-во задач</param>
+        /// <returns>Словарь, где ключ - идентификатор сотрудника, значние - количество задач</returns>
         public Dictionary<string, int> CalculateTaskCountByEmployee(Worksheet tasksSheet, List<Employee> employees)
         {
             Dictionary<string, int> taskCountByEmployee = new Dictionary<string, int>();

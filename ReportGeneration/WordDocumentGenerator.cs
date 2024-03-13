@@ -34,6 +34,8 @@ namespace ReportGeneration
             title.Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
             title.Range.InsertParagraphAfter();
             Microsoft.Office.Interop.Word.Range paragraphRange = title.Range.Paragraphs.Last.Range;
+
+            //Добавление двух абзачев для отсутпа заголовка от таблицы, если подумать то можно упростить.
             paragraphRange.InsertParagraphAfter();
             paragraphRange.InsertParagraphAfter();
             Table table = doc.Tables.Add(title.Range, departments.Count + employees.Count + 1 , 2);
@@ -52,10 +54,12 @@ namespace ReportGeneration
             int rowIndex = 2; 
             foreach (var department in departments)
             {
+                //Подсчет общего количества задач для текущего отдела.
+                int departmentTaskCount = employees
+                    .Where(emp => emp.DepartmentId == department.DepartmentId)
+                    .Sum(emp => taskCountByEmployee.ContainsKey(emp.EmployeeId) ? taskCountByEmployee[emp.EmployeeId] : 0);
 
-                int departmentTaskCount = employees.Where(emp => emp.DepartmentId == department.DepartmentId)
-                                                   .Sum(emp => taskCountByEmployee.ContainsKey(emp.EmployeeId) ? taskCountByEmployee[emp.EmployeeId] : 0);
-
+                //Заполняем ячейку в таблице с названием отдела и количестов задач в отделе.
                 table.Cell(rowIndex, 1).Range.Text = department.DepartmentName;
                 table.Cell(rowIndex, 2).Range.Text = departmentTaskCount.ToString();
                 table.Cell(rowIndex, 1).Range.Font.Bold = 1;
@@ -67,22 +71,24 @@ namespace ReportGeneration
                 foreach (var employee in employees.Where(emp => emp.DepartmentId == department.DepartmentId)
                                                    .OrderByDescending(emp => taskCountByEmployee.ContainsKey(emp.EmployeeId) ? taskCountByEmployee[emp.EmployeeId] : 0))
                 {
-                    Console.WriteLine($"Фамилия: {employee.LastName}, Имя: {employee.FirstName}, Отчество: {employee.Patronymic}, Дата рождения: {employee.BirthDate}");
-
+                    //Заполняем ячейки таблицы данными о сотруднике и количестве его задач.
                     if (employee.Patronymic == null)
                     {
+                        //Если отчество отсутствует то записываем только фамилию и инициал имени.
                         table.Cell(rowIndex, 1).Range.Text = $"{employee.LastName} {employee.FirstName.Substring(0, 1)}. ";
                         table.Cell(rowIndex, 2).Range.Text = taskCountByEmployee.ContainsKey(employee.EmployeeId) ? taskCountByEmployee[employee.EmployeeId].ToString() : "0";
                         rowIndex++; 
                     }
                     else
                     {
+                        //Если отчество есть, то записываем полные инициалы.
                         table.Cell(rowIndex, 1).Range.Text = $"{employee.LastName} {employee.FirstName.Substring(0, 1)}. {employee.Patronymic.Substring(0, 1)}.";
                         table.Cell(rowIndex, 2).Range.Text = taskCountByEmployee.ContainsKey(employee.EmployeeId) ? taskCountByEmployee[employee.EmployeeId].ToString() : "0";
                         rowIndex++; 
                     }
                 }
             }
+            // Устанавливаем шрифт и размер текста для всех ячеек таблицы.
             for (int i = 1; i <= table.Rows.Count; i++)
             {
                 for (int j = 1; j <= table.Columns.Count; j++)
@@ -91,29 +97,10 @@ namespace ReportGeneration
                     table.Cell(i, j).Range.Font.Size = 11;
                 }
             }
+            // Выравниваем текст в столбце "Отделы" по левому краю.
             for (int row = 2; row <= table.Rows.Count; row++)
             {
                 table.Cell(row, 1).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-            }
-            for (int i = table.Rows.Count; i >= 1; i--)
-            {
-                var row = table.Rows[i];
-                bool isRowEmpty = true;
-
-                for (int j = 1; j <= table.Columns.Count; j++)
-                {
-                    var cellText = row.Cells[j].Range.Text.Trim();
-                    if (!string.IsNullOrEmpty(cellText))
-                    {
-                        isRowEmpty = false;
-                        break;
-                    }
-                }
-
-                if (isRowEmpty)
-                {
-                    row.Delete();
-                }
             }
             for (int i = 1; i <= table.Rows.Count; i++)
             {
@@ -130,6 +117,7 @@ namespace ReportGeneration
                     }
                 }
             }
+            // Сохраняем документ и отлавливаем возможные ошибки при сохрании (отсутствие доступа и т.д.).
             bool success  = false;
             while (!success)
             {
@@ -138,6 +126,7 @@ namespace ReportGeneration
                     doc.SaveAs2($"{_wordFilePath}Отчет.docx");
                     wordApp.Quit();
                     Console.WriteLine($"Файл успешно сохранён по пути: {_wordFilePath}Отчет.docx");
+                    success = true;
                 }
                 catch (Exception ex)
                 {
