@@ -7,6 +7,11 @@ namespace ReportGeneration
 {
     public class ReadingData
     {
+        /// <summary>
+        /// Считываем данные о сотрудниках из листа "Сотрудники"
+        /// </summary>
+        /// <param name="employeesSheet">Лист "Сотрудники"</param>
+        /// <returns>Список объектов типа Employee</returns>
         public List<Employee> ReadEmployees(Worksheet employeesSheet)
         {
             List<Employee> employees = new List<Employee>();
@@ -30,6 +35,11 @@ namespace ReportGeneration
 
             return employees;
         }
+        /// <summary>
+        /// Получаем строку из ячейки Excel
+        /// </summary>
+        /// <param name="cell">Ячейка Excel</param>
+        /// <returns>Строка или null, если ячейка пустая</returns>
         private string GetStringValue(Microsoft.Office.Interop.Excel.Range cell)
         {
             if (cell != null && cell.Value2 != null)
@@ -38,6 +48,11 @@ namespace ReportGeneration
             }
             return null; 
         }
+        /// <summary>
+        /// Получаем дату в формате короткой строки из ячейки Excel
+        /// </summary>
+        /// <param name="cell">Ячейка Excel</param>
+        /// <returns>Дата в формате короткой сткроки или null, если ячейка не является датой</returns>
         private string GetDateStringEmployee(Microsoft.Office.Interop.Excel.Range cell)
         {
             if (cell != null && cell.Value2 != null)
@@ -51,6 +66,11 @@ namespace ReportGeneration
             }
             return null; 
         }
+        /// <summary>
+        /// Получаем целое число из ячейки
+        /// </summary>
+        /// <param name="cell">Ячейка Учсуд</param>
+        /// <returns>Целове число или 0, если значение в ячейке не является целым числом</returns>
         private int GetIntValueEmployee(Microsoft.Office.Interop.Excel.Range cell)
         {
             if (cell != null && cell.Value2 != null)
@@ -63,6 +83,11 @@ namespace ReportGeneration
             }
             return 0; 
         }
+        /// <summary>
+        /// Считываем данные из листа "Отделы"
+        /// </summary>
+        /// <param name="departmentsSheet">Лист "Отделы"</param>
+        /// <returns>Список объектов типа Department </returns>
         public List<Department> ReadDepartments(Worksheet departmentsSheet)
         {
             List<Department> departments = new List<Department>();
@@ -78,9 +103,13 @@ namespace ReportGeneration
                         };
 
             departments = query.ToList();
-
             return departments;
         }
+        /// <summary>
+        /// Получаем строку из ячейки
+        /// </summary>
+        /// <param name="cell">Ячейка Excel из которой извлекаем данные</param>
+        /// <returns>Строка или null, если ячейка пустая</returns>
         private string GetStringValueDepartment(Microsoft.Office.Interop.Excel.Range cell)
         {
             if (cell != null && cell.Value2 != null)
@@ -89,6 +118,11 @@ namespace ReportGeneration
             }
             return null;
         }
+        /// <summary>
+        /// Извлечение целого числа из ячейки
+        /// </summary>
+        /// <param name="cell">Ячейка Excel</param>
+        /// <returns>Целое число или 0, если ячейка пустая или не содержит челое число</returns>
         private int GetIntValueDepartment(Microsoft.Office.Interop.Excel.Range cell)
         {
             if (cell != null && cell.Value2 != null)
@@ -101,6 +135,12 @@ namespace ReportGeneration
             }
             return 0;
         }
+        /// <summary>
+        /// Подсчёт количества задач для каждого сторудника
+        /// </summary>
+        /// <param name="tasksSheet">Лист "Задчи"</param>
+        /// <param name="employees">Список сотруников, для которых нужно посчитать кол-во задач</param>
+        /// <returns>Словарь, где ключ - ядентификатор сотрудника, значние - количество задач</returns>
         public Dictionary<string, int> CalculateTaskCountByEmployee(Worksheet tasksSheet, List<Employee> employees)
         {
             Dictionary<string, int> taskCountByEmployee = new Dictionary<string, int>();
@@ -122,6 +162,11 @@ namespace ReportGeneration
             }
             return taskCountByEmployee;
         }
+        /// <summary>
+        /// Получаем строку из ячейки
+        /// </summary>
+        /// <param name="cell">Ячейка Excel из которой производится считывание</param>
+        /// <returns>Строка или null, если ячейка пустая</returns>
         private string GetStringCellValueTask(Microsoft.Office.Interop.Excel.Range cell)
         {
             if (cell != null && cell.Value2 != null)

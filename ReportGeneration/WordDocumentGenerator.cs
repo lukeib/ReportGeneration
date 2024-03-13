@@ -12,6 +12,13 @@ namespace ReportGeneration
         {
             _wordFilePath = wordFilePath;
         }
+        /// <summary>
+        /// Генерация отчёта в формате word и создание таблицы.
+        /// Результатом выполнения будет создан Word файл с таблицей состоящей из сотрудников, отделов и количества задач.
+        /// </summary>
+        /// <param name="departments">Список отделов</param>
+        /// <param name="employees">Список сотрудников</param>
+        /// <param name="taskCountByEmployee">Словарь с количеством задач</param>
         public void GenerateReport(List<Department> departments, List<Employee> employees, Dictionary<string, int> taskCountByEmployee)
         {
             departments = departments.OrderByDescending(department =>

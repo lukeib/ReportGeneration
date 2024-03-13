@@ -10,7 +10,7 @@ namespace ReportGeneration
         static void Main(string[] args)
         {
             string excelFilePath;
-
+            
             while (true)
             {
                 Console.WriteLine("Введите абсолютный путь к Excel файлу " + "Data.xlsb"+":");
