@@ -38,6 +38,9 @@ namespace ReportGeneration
 
             workbook.Close(false);
             excelApp.Quit();
+
+            // Открываем документ Word и завершаем выполнение программы
+            System.Diagnostics.Process.Start("WINWORD.EXE", $"{wordFilePath}Отчет.docx");
         }
     }
 }
